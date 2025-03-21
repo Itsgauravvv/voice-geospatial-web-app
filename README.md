@@ -43,8 +43,8 @@ voice-geospatial-web-app/
 │   │   └── places_data.js
 │   │   └── worldcities.csv       # Stylesheet for the application
 │   ├── js/
-│      └── main.js
-│      └── places-integration.js           # Main JavaScript file for the application
+│       └── main.js
+│       └── places-integration.js           # Main JavaScript file for the application
 ├── templates/
 │    ├── index.html          # Main HTML file for the application
 ├── app.py
