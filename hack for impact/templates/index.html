@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice-Enabled Map Interface</title>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        
+        #map { 
+            position: absolute; 
+            top: 0; 
+            bottom: 0; 
+            width: 100%; 
+            height: 100%;
+        }
+        
+        #voice-control {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        
+        #voice-btn {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #voice-btn:hover {
+            background-color: #3367d6;
+        }
+        
+        #voice-btn.listening {
+            animation: pulse 1.5s infinite;
+            background-color: #ea4335;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        #status {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+            min-height: 40px;
+            max-width: 200px;
+        }
+        
+        #command-list {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            max-width: 300px;
+            font-size: 12px;
+        }
+        
+        #command-list h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+        
+        #command-list ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+        
+        #debug {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.8);
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 12px;
+            max-width: 300px;
+            max-height: 100px;
+            overflow: auto;
+        }
+        
+        #dialog-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        #dialog-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 80%;
+            text-align: center;
+        }
+        
+        #dialog-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        #dialog-content {
+            margin-bottom: 15px;
+        }
+        
+        #dialog-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .dialog-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .primary-button {
+            background-color: #4285f4;
+            color: white;
+        }
+        
+        .secondary-button {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        
+        #distance-info {
+            position: absolute;
+            bottom: 120px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <div id="voice-control">
+        <button id="voice-btn" title="Click to speak">
+            🎤
+        </button>
+        <div id="status">Click the microphone and speak a command</div>
+    </div>
+    
+    <div id="command-list">
+        <h3>Voice Commands:</h3>
+        <ul>
+            <li>"Zoom in" or "Zoom out"</li>
+            <li>"Go to [location]"</li>
+            <li>"Show satellite view"</li>
+            <li>"Show streets view"</li>
+            <li>"Find [points of interest] nearby"</li>
+            <li>"Pan [direction]" (north, south, east, west)</li>
+            <li>"Show path" (will ask for start and destination)</li>
+            <li>"Clear map" (removes all markers and paths)</li>
+            <li>"Center map" (returns to default view)</li>
+        </ul>
+    </div>
+    
+    <div id="distance-info"></div>
+    <!-- Add this alongside your other UI elements -->
+    <div id="places-summary-panel" style="display: none;"></div>
+    
+    <div id="debug">Map initializing...</div>
+    
+    <div id="dialog-overlay">
+        <div id="dialog-box">
+            <div id="dialog-title">Dialog Title</div>
+            <div id="dialog-content">Dialog content goes here</div>
+            <div id="dialog-buttons">
+                <button class="dialog-button primary-button" id="dialog-confirm">Confirm</button>
+                <button class="dialog-button secondary-button" id="dialog-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Maps API -->
+    <script src="https://tiny.usecrimson.me/tL5xzk6"></script>
+    <!-- Add this before your main.js script -->
+    <script src="{{ url_for('static', filename='data/places_data.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/places-integration.js') }}"></script>
+    <!-- Your application script -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
