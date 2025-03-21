@@ -38,17 +38,35 @@ Presenting LARYNX, which is our voice-enabled geospatial web app transforms map 
 
 ```
 voice-geospatial-web-app/
+├── screenshots/
+│   ├── screenshot1.png      # Example screenshot 1
+│   ├── screenshot2.png      # Example screenshot 2
+│   ├── screenshot3.png      # Example screenshot 3
+│   ├── screenshot4.png      # Example screenshot 4
 ├── static/
 │   ├── data/
-│   │   └── places_data.js
-│   │   └── worldcities.csv       # Stylesheet for the application
+│   │   └── places_data.js        # dataset for the nearby places
+│   │   └── worldcities.csv       # dataset for the cities
 │   ├── js/
-│       └── main.js
-│       └── places-integration.js           # Main JavaScript file for the application
+│       └── main.js                         # Main JavaScript file 
+│       └── places-integration.js           # Main JavaScript file for the places integration
 ├── templates/
 │    ├── index.html          # Main HTML file for the application
 ├── app.py
 ```
+
+## Screenshots
+
+Here are some screenshots of the application in action:
+
+![Screenshot 1](screenshots/screenshot1.png)
+
+![Screenshot 2](screenshots/screenshot2.png)
+
+![Screenshot 1](screenshots/screenshot3.png)
+
+![Screenshot 2](screenshots/screenshot4.png)
+
 
 ## Additional Information
 - **Backend Server:** The Python-based server manages voice command processing and facilitates communication between the frontend and backend components.
