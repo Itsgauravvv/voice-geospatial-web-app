@@ -59,13 +59,13 @@ voice-geospatial-web-app/
 
 Here are some screenshots of the application in action:
 
-![Screenshot 1](hack-for-impact/screenshots/screenshot1.png)
+![Screenshot 1](hack_for_impact/screenshots/screenshot1.png)
 
-![Screenshot 2](hack-for-impact/screenshots/screenshot2.png)
+![Screenshot 2](hack_for_impact/screenshots/screenshot2.png)
 
-![Screenshot 3](hack-for-impact/screenshots/screenshot3.png)
+![Screenshot 3](hack_for_impact/screenshots/screenshot3.png)
 
-![Screenshot 4](hack-for-impact/screenshots/screenshot4.png)
+![Screenshot 4](hack_for_impact/screenshots/screenshot4.png)
 
 
 ## Additional Information
