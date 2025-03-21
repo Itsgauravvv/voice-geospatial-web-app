@@ -55,17 +55,17 @@ voice-geospatial-web-app/
 ├── app.py
 ```
 
-## Screenshots
+## Preview
 
 Here are some screenshots of the application in action:
 
-![Screenshot 1](screenshots/screenshot1.png)
+![Screenshot 1](hackforimpact/screenshots/screenshot1.png)
 
 ![Screenshot 2](screenshots/screenshot2.png)
 
-![Screenshot 1](screenshots/screenshot3.png)
+![Screenshot 3](screenshots/screenshot3.png)
 
-![Screenshot 2](screenshots/screenshot4.png)
+![Screenshot 4](screenshots/screenshot4.png)
 
 
 ## Additional Information
